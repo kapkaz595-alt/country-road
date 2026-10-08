@@ -1,0 +1,16 @@
+{
+  "search_from": "From",
+  "search_to": "To",
+  "search_date": "Date",
+  "search_seats": "Passengers",
+  "search_btn": "Search",
+  "any_city": "Any city",
+  "upcoming_rides": "Upcoming rides",
+  "search_results": "Search results",
+  "no_rides": "No rides found. Try another date or route.",
+  "seats_left": "seats left",
+  "rides_done": "rides",
+  "view_ride": "View ride",
+  "new_driver": "New member",
+  "home_publish_q": "Where are you heading?"
+}
