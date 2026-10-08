@@ -1,0 +1,16 @@
+{
+  "search_from": "Қайдан",
+  "search_to": "Қайда",
+  "search_date": "Күні",
+  "search_seats": "Жолаушы саны",
+  "search_btn": "Іздеу",
+  "any_city": "Кез келген қала",
+  "upcoming_rides": "Жақын сапарлар",
+  "search_results": "Табылған сапарлар",
+  "no_rides": "Сапар табылмады. Басқа күнді немесе бағытты көріңіз.",
+  "seats_left": "бос орын",
+  "rides_done": "сапар",
+  "view_ride": "Сапарды көру",
+  "new_driver": "Жаңа мүше",
+  "home_publish_q": "Сіз қайда бара жатырсыз?"
+}
