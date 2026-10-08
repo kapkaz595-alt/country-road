@@ -1,0 +1,16 @@
+{
+  "search_from": "出发地",
+  "search_to": "目的地",
+  "search_date": "日期",
+  "search_seats": "乘客人数",
+  "search_btn": "搜索",
+  "any_city": "不限城市",
+  "upcoming_rides": "近期行程",
+  "search_results": "搜索结果",
+  "no_rides": "没有找到行程，换个日期或路线试试。",
+  "seats_left": "个空座",
+  "rides_done": "次行程",
+  "view_ride": "查看行程",
+  "new_driver": "新成员",
+  "home_publish_q": "你要去哪里？"
+}
