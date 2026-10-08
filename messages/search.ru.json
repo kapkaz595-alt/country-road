@@ -1,0 +1,16 @@
+{
+  "search_from": "Откуда",
+  "search_to": "Куда",
+  "search_date": "Дата",
+  "search_seats": "Пассажиров",
+  "search_btn": "Найти",
+  "any_city": "Любой город",
+  "upcoming_rides": "Ближайшие поездки",
+  "search_results": "Найденные поездки",
+  "no_rides": "Поездок не найдено. Попробуйте другую дату или маршрут.",
+  "seats_left": "своб. мест",
+  "rides_done": "поездок",
+  "view_ride": "Смотреть поездку",
+  "new_driver": "Новый участник",
+  "home_publish_q": "Куда вы едете?"
+}
