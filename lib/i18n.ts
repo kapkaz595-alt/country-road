@@ -14,20 +14,23 @@ import tkk from '@/messages/trips.kk.json'
 import tru from '@/messages/trips.ru.json'
 import tzh from '@/messages/trips.zh.json'
 import ten from '@/messages/trips.en.json'
+import vkk from '@/messages/reviews.kk.json'
+import vru from '@/messages/reviews.ru.json'
+import vzh from '@/messages/reviews.zh.json'
+import ven from '@/messages/reviews.en.json'
 import type { Locale } from './locales'
 
-export type Dict = typeof kk & typeof skk & typeof rkk & typeof tkk
+export type Dict = typeof kk & typeof skk & typeof rkk & typeof tkk & typeof vkk
 
-const base: Dict = { ...kk, ...skk, ...rkk, ...tkk }
+const base: Dict = { ...kk, ...skk, ...rkk, ...tkk, ...vkk }
 
 const all: Record<Locale, Partial<Dict>> = {
   kk: base,
-  ru: { ...ru, ...sru, ...rru, ...tru },
-  zh: { ...zh, ...szh, ...rzh, ...tzh },
-  en: { ...en, ...sen, ...ren, ...ten },
+  ru: { ...ru, ...sru, ...rru, ...tru, ...vru },
+  zh: { ...zh, ...szh, ...rzh, ...tzh, ...vzh },
+  en: { ...en, ...sen, ...ren, ...ten, ...ven },
 }
 
-// 缺失的 key 自动回退到哈语
 export function getDict(locale: Locale): Dict {
   return { ...base, ...all[locale] }
 }
