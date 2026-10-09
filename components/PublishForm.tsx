@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { Locale } from '@/lib/locales'
 import type { Dict } from '@/lib/i18n'
+import { colorLabel } from '@/lib/colors'
 
 export type City = {
   id: string
@@ -25,6 +26,13 @@ export type VehicleRow = {
   color: string
 }
 
+const LABELS: Record<Locale, { from: string; to: string }> = {
+  kk: { from: 'Қайдан', to: 'Қайда' },
+  ru: { from: 'Откуда', to: 'Куда' },
+  zh: { from: '出发地', to: '目的地' },
+  en: { from: 'From', to: 'To' },
+}
+
 function formatPrice(n: number) {
   return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
 }
@@ -44,7 +52,8 @@ export default function PublishForm({
   routes: RouteRow[]
   vehicles: VehicleRow[]
 }) {
-  const [routeId, setRouteId] = useState(routes[0]?.id ?? '')
+  const [fromCity, setFromCity] = useState(routes[0]?.from_city_id ?? '')
+  const [toCity, setToCity] = useState(routes[0]?.to_city_id ?? '')
   const [vehicleId, setVehicleId] = useState(vehicles[0]?.id ?? '')
   const [departAt, setDepartAt] = useState('')
   const [seats, setSeats] = useState('3')
@@ -63,12 +72,21 @@ export default function PublishForm({
     return rec[`name_${locale}`] ?? c.name_kk
   }
 
-  const route = routes.find((r) => r.id === routeId)
+  const fromIds = Array.from(new Set(routes.map((r) => r.from_city_id)))
+  const toIds = routes.filter((r) => r.from_city_id === fromCity).map((r) => r.to_city_id)
+  const route = routes.find((r) => r.from_city_id === fromCity && r.to_city_id === toCity)
+
+  function changeFrom(id: string) {
+    setFromCity(id)
+    const first = routes.find((r) => r.from_city_id === id)
+    setToCity(first?.to_city_id ?? '')
+  }
 
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     setMsg('')
     setIsError(false)
+    if (!route) return
 
     const when = new Date(departAt)
     if (isNaN(when.getTime()) || when.getTime() <= Date.now()) {
@@ -83,7 +101,7 @@ export default function PublishForm({
       .insert({
         driver_id: userId,
         vehicle_id: vehicleId,
-        route_id: routeId,
+        route_id: route.id,
         from_point: fromPoint.trim(),
         to_point: toPoint.trim(),
         depart_at: when.toISOString(),
@@ -113,16 +131,28 @@ export default function PublishForm({
 
   return (
     <form onSubmit={submit} className="space-y-4 rounded-2xl border border-stone-200 bg-white p-5">
-      <label className="block text-sm">
-        <span className="text-stone-600">{t.route}</span>
-        <select value={routeId} onChange={(e) => setRouteId(e.target.value)} className={input}>
-          {routes.map((r) => (
-            <option key={r.id} value={r.id}>
-              {cityName(r.from_city_id)} → {cityName(r.to_city_id)}
-            </option>
-          ))}
-        </select>
-      </label>
+      <div className="grid grid-cols-2 gap-3">
+        <label className="block text-sm">
+          <span className="text-stone-600">{LABELS[locale].from}</span>
+          <select value={fromCity} onChange={(e) => changeFrom(e.target.value)} className={input}>
+            {fromIds.map((id) => (
+              <option key={id} value={id}>
+                {cityName(id)}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="block text-sm">
+          <span className="text-stone-600">{LABELS[locale].to}</span>
+          <select value={toCity} onChange={(e) => setToCity(e.target.value)} className={input}>
+            {toIds.map((id) => (
+              <option key={id} value={id}>
+                {cityName(id)}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
 
       {route && (
         <div className="rounded-lg bg-emerald-50 px-4 py-3">
@@ -139,7 +169,7 @@ export default function PublishForm({
         <select value={vehicleId} onChange={(e) => setVehicleId(e.target.value)} className={input}>
           {vehicles.map((v) => (
             <option key={v.id} value={v.id}>
-              {v.brand} {v.model} · {v.color}
+              {v.brand} {v.model} · {colorLabel(v.color, locale)}
             </option>
           ))}
         </select>
@@ -202,7 +232,7 @@ export default function PublishForm({
 
       <button
         type="submit"
-        disabled={busy || !ownTrip}
+        disabled={busy || !ownTrip || !route}
         className="w-full rounded-lg bg-emerald-700 py-2.5 font-medium text-white disabled:opacity-60"
       >
         {t.publish_submit}
