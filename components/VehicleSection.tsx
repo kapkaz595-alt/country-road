@@ -17,16 +17,19 @@ export default function VehicleSection({
   t,
   userId,
   vehicles,
+  plates,
 }: {
   t: Dict
   userId: string
   vehicles: Vehicle[]
+  plates: Record<string, string>
 }) {
   const router = useRouter()
   const [brand, setBrand] = useState('')
   const [model, setModel] = useState('')
   const [color, setColor] = useState('')
   const [year, setYear] = useState('')
+  const [plate, setPlate] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 
@@ -34,7 +37,8 @@ export default function VehicleSection({
     e.preventDefault()
     setBusy(true)
     setError('')
-    const { error } = await createClient()
+    const supabase = createClient()
+    const { data, error } = await supabase
       .from('vehicles')
       .insert({
         user_id: userId,
@@ -43,15 +47,30 @@ export default function VehicleSection({
         color: color.trim(),
         year: year ? Number(year) : null,
       })
-    setBusy(false)
-    if (error) {
+      .select('id')
+      .single()
+    if (error || !data) {
+      setBusy(false)
       setError(t.error_generic)
       return
     }
+    const { error: plateError } = await supabase.from('vehicle_plates').insert({
+      vehicle_id: data.id,
+      user_id: userId,
+      plate: plate.trim().toUpperCase(),
+    })
+    if (plateError) {
+      await supabase.from('vehicles').delete().eq('id', data.id)
+      setBusy(false)
+      setError(t.error_generic)
+      return
+    }
+    setBusy(false)
     setBrand('')
     setModel('')
     setColor('')
     setYear('')
+    setPlate('')
     router.refresh()
   }
 
@@ -74,13 +93,18 @@ export default function VehicleSection({
           {vehicles.map((v) => (
             <li
               key={v.id}
-              className="flex items-center justify-between rounded-lg bg-stone-50 px-3 py-2 text-sm"
+              className="flex items-center justify-between gap-3 rounded-lg bg-stone-50 px-3 py-2 text-sm"
             >
               <span>
                 {v.brand} {v.model} · {v.color}
                 {v.year ? ` · ${v.year}` : ''}
+                {plates[v.id] ? (
+                  <span className="ml-2 rounded bg-white px-2 py-0.5 font-mono text-xs ring-1 ring-stone-300">
+                    {plates[v.id]}
+                  </span>
+                ) : null}
               </span>
-              <button onClick={() => remove(v.id)} className="text-red-600">
+              <button onClick={() => remove(v.id)} className="shrink-0 text-red-600">
                 {t.delete}
               </button>
             </li>
@@ -101,6 +125,18 @@ export default function VehicleSection({
           onChange={(e) => setYear(e.target.value)}
           className={input}
         />
+        <div className="col-span-2 space-y-1">
+          <input
+            required
+            minLength={3}
+            maxLength={15}
+            placeholder={`${t.plate} · ${t.plate_placeholder}`}
+            value={plate}
+            onChange={(e) => setPlate(e.target.value)}
+            className={`${input} uppercase`}
+          />
+          <p className="text-xs text-stone-500">{t.plate_note}</p>
+        </div>
         {error && <p className="col-span-2 text-sm text-red-600">{error}</p>}
         <button
           type="submit"
