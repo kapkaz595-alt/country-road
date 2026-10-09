@@ -1,0 +1,19 @@
+{
+  "complete_ride": "Завершить поездку",
+  "confirm_complete_ride": "Отметить поездку как завершённую?",
+  "err_not_departed": "Время поездки ещё не наступило.",
+  "review_leave": "Оставить отзыв",
+  "review_title": "Оценить",
+  "review_for": "Оценка для",
+  "review_rate": "Оценка",
+  "review_tags": "Теги",
+  "review_comment": "Комментарий (необязательно)",
+  "review_submit": "Отправить",
+  "review_done": "Отзыв отправлен",
+  "err_already_reviewed": "Вы уже оставили отзыв.",
+  "tag_punctual": "Пунктуальность",
+  "tag_friendly": "Дружелюбие",
+  "tag_safe": "Безопасное вождение",
+  "tag_clean": "Чистая машина",
+  "tag_polite": "Вежливость"
+}
