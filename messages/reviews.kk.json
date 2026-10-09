@@ -1,0 +1,19 @@
+{
+  "complete_ride": "Сапарды аяқтау",
+  "confirm_complete_ride": "Сапар аяқталды деп белгілейсіз бе?",
+  "err_not_departed": "Сапар уақыты әлі келген жоқ.",
+  "review_leave": "Пікір қалдыру",
+  "review_title": "Баға беру",
+  "review_for": "Баға беру",
+  "review_rate": "Баға",
+  "review_tags": "Белгілер",
+  "review_comment": "Пікір (міндетті емес)",
+  "review_submit": "Жіберу",
+  "review_done": "Баға берілді",
+  "err_already_reviewed": "Сіз бұрын баға бергенсіз.",
+  "tag_punctual": "Уақытында",
+  "tag_friendly": "Мейірімді",
+  "tag_safe": "Қауіпсіз жүргізу",
+  "tag_clean": "Таза көлік",
+  "tag_polite": "Сыпайы"
+}
