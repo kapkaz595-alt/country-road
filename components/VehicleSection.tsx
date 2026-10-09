@@ -13,6 +13,43 @@ export type Vehicle = {
   year: number | null
 }
 
+const BRANDS = [
+  'Toyota',
+  'Hyundai',
+  'Kia',
+  'Chevrolet',
+  'Lada (VAZ)',
+  'Daewoo',
+  'Nissan',
+  'Mitsubishi',
+  'Lexus',
+  'Honda',
+  'Mazda',
+  'Skoda',
+  'Volkswagen',
+  'Renault',
+  'Ford',
+  'BMW',
+  'Mercedes-Benz',
+  'Audi',
+  'Subaru',
+  'Suzuki',
+  'Opel',
+  'Peugeot',
+  'Volvo',
+  'Land Rover',
+  'UAZ',
+  'Chery',
+  'Geely',
+  'Haval',
+  'Changan',
+  'JAC',
+  'BYD',
+  'Jetour',
+  'Exeed',
+]
+const OTHER = '__other__'
+
 export default function VehicleSection({
   t,
   userId,
@@ -25,7 +62,8 @@ export default function VehicleSection({
   plates: Record<string, string>
 }) {
   const router = useRouter()
-  const [brand, setBrand] = useState('')
+  const [brandSel, setBrandSel] = useState('')
+  const [brandOther, setBrandOther] = useState('')
   const [model, setModel] = useState('')
   const [color, setColor] = useState('')
   const [year, setYear] = useState('')
@@ -35,6 +73,8 @@ export default function VehicleSection({
 
   async function add(e: React.FormEvent) {
     e.preventDefault()
+    const brand = brandSel === OTHER ? brandOther.trim() : brandSel
+    if (!brand) return
     setBusy(true)
     setError('')
     const supabase = createClient()
@@ -42,7 +82,7 @@ export default function VehicleSection({
       .from('vehicles')
       .insert({
         user_id: userId,
-        brand: brand.trim(),
+        brand,
         model: model.trim(),
         color: color.trim(),
         year: year ? Number(year) : null,
@@ -66,7 +106,8 @@ export default function VehicleSection({
       return
     }
     setBusy(false)
-    setBrand('')
+    setBrandSel('')
+    setBrandOther('')
     setModel('')
     setColor('')
     setYear('')
@@ -113,8 +154,32 @@ export default function VehicleSection({
       )}
 
       <form onSubmit={add} className="grid grid-cols-2 gap-3">
-        <input required placeholder={t.brand} value={brand} onChange={(e) => setBrand(e.target.value)} className={input} />
+        <select
+          required
+          value={brandSel}
+          onChange={(e) => setBrandSel(e.target.value)}
+          className={`${input} bg-white`}
+        >
+          <option value="" disabled>
+            {t.brand}
+          </option>
+          {BRANDS.map((b) => (
+            <option key={b} value={b}>
+              {b}
+            </option>
+          ))}
+          <option value={OTHER}>{t.reason_other}</option>
+        </select>
         <input required placeholder={t.model} value={model} onChange={(e) => setModel(e.target.value)} className={input} />
+        {brandSel === OTHER && (
+          <input
+            required
+            placeholder={t.brand}
+            value={brandOther}
+            onChange={(e) => setBrandOther(e.target.value)}
+            className={`${input} col-span-2`}
+          />
+        )}
         <input required placeholder={t.color} value={color} onChange={(e) => setColor(e.target.value)} className={input} />
         <input
           type="number"
