@@ -6,6 +6,8 @@ import { createClient } from '@/lib/supabase/server'
 import ContactCard from '@/components/ContactCard'
 import RequestActions from '@/components/RequestActions'
 import CancelRideButton from '@/components/CancelRideButton'
+import CompleteRideButton from '@/components/CompleteRideButton'
+import ReviewForm from '@/components/ReviewForm'
 
 type ContactProp = React.ComponentProps<typeof ContactCard>['contact']
 
@@ -54,19 +56,23 @@ export default async function MyTripsPage({ params }: { params: Promise<{ locale
       minute: '2-digit',
     }).format(new Date(iso))
 
-  // 1. 我发布的行程 + 我发出的请求
-  const [{ data: pubData }, { data: myReqData }] = await Promise.all([
+  const [{ data: pubData }, { data: myReqData }, { data: myReviewData }] = await Promise.all([
     supabase.from('rides').select('*').eq('driver_id', user.id).order('depart_at', { ascending: false }),
     supabase
       .from('ride_requests')
       .select('id,ride_id,passenger_id,seats,message,status')
       .eq('passenger_id', user.id)
       .order('created_at', { ascending: false }),
+    supabase.from('reviews').select('ride_id,reviewee_id').eq('reviewer_id', user.id),
   ])
   const published = (pubData ?? []) as Ride[]
   const myReqs = (myReqData ?? []) as Req[]
+  const reviewed = new Set(
+    ((myReviewData ?? []) as { ride_id: string; reviewee_id: string }[]).map(
+      (r) => `${r.ride_id}:${r.reviewee_id}`,
+    ),
+  )
 
-  // 2. 收到的请求 + 我请求过的行程
   const pubIds = published.map((r) => r.id)
   const reqRideIds = myReqs.map((r) => r.ride_id)
 
@@ -85,7 +91,6 @@ export default async function MyTripsPage({ params }: { params: Promise<{ locale
   const incoming = (inData ?? []) as Req[]
   const reqRides = new Map(((reqRidesData ?? []) as Ride[]).map((r) => [r.id, r]))
 
-  // 3. 资料与联系方式
   const profileIds = Array.from(
     new Set([
       ...incoming.map((r) => r.passenger_id),
@@ -131,6 +136,7 @@ export default async function MyTripsPage({ params }: { params: Promise<{ locale
         {published.map((ride) => {
           const reqs = incoming.filter((r) => r.ride_id === ride.id)
           const open = ride.status === 'published' || ride.status === 'confirmed'
+          const done = ride.status === 'completed'
           return (
             <div key={ride.id} className={card}>
               <div className="flex items-start justify-between gap-3">
@@ -169,12 +175,30 @@ export default async function MyTripsPage({ params }: { params: Promise<{ locale
                           contact={contacts.get(rq.passenger_id) as unknown as ContactProp}
                         />
                       )}
+                      {rq.status === 'accepted' && done && (
+                        reviewed.has(`${ride.id}:${rq.passenger_id}`) ? (
+                          <p className="text-xs text-emerald-700">✓ {t.review_done}</p>
+                        ) : (
+                          <ReviewForm
+                            t={t}
+                            rideId={ride.id}
+                            reviewerId={user.id}
+                            revieweeId={rq.passenger_id}
+                            revieweeName={p?.name || '—'}
+                          />
+                        )
+                      )}
                     </div>
                   )
                 })}
               </div>
 
-              {open && <CancelRideButton t={t} rideId={ride.id} />}
+              {open && (
+                <div className="flex flex-wrap gap-2">
+                  <CompleteRideButton t={t} rideId={ride.id} />
+                  <CancelRideButton t={t} rideId={ride.id} />
+                </div>
+              )}
             </div>
           )
         })}
@@ -208,6 +232,19 @@ export default async function MyTripsPage({ params }: { params: Promise<{ locale
                   t={t}
                   contact={contacts.get(ride.driver_id) as unknown as ContactProp}
                 />
+              )}
+              {rq.status === 'accepted' && ride.status === 'completed' && (
+                reviewed.has(`${ride.id}:${ride.driver_id}`) ? (
+                  <p className="text-xs text-emerald-700">✓ {t.review_done}</p>
+                ) : (
+                  <ReviewForm
+                    t={t}
+                    rideId={ride.id}
+                    reviewerId={user.id}
+                    revieweeId={ride.driver_id}
+                    revieweeName={d?.name || '—'}
+                  />
+                )
               )}
             </div>
           )
