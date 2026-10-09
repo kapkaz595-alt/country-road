@@ -1,0 +1,19 @@
+{
+  "complete_ride": "完成行程",
+  "confirm_complete_ride": "确认将此行程标记为已完成？",
+  "err_not_departed": "还没到出发时间。",
+  "review_leave": "去评价",
+  "review_title": "评价",
+  "review_for": "评价对象",
+  "review_rate": "评分",
+  "review_tags": "标签",
+  "review_comment": "留言（选填）",
+  "review_submit": "提交",
+  "review_done": "已评价",
+  "err_already_reviewed": "你已经评价过了。",
+  "tag_punctual": "准时",
+  "tag_friendly": "友好",
+  "tag_safe": "驾驶安全",
+  "tag_clean": "车内整洁",
+  "tag_polite": "有礼貌"
+}
