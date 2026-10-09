@@ -16,15 +16,22 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
   } = await supabase.auth.getUser()
   if (!user) redirect(`/${locale}/login`)
 
-  const [{ data: profile }, { data: contacts }, { data: vehicles }] = await Promise.all([
-    supabase.from('profiles').select('name').eq('id', user.id).single(),
-    supabase.from('contacts').select('phone,whatsapp,telegram').eq('user_id', user.id).maybeSingle(),
-    supabase
-      .from('vehicles')
-      .select('id,brand,model,color,year')
-      .eq('user_id', user.id)
-      .order('created_at'),
-  ])
+  const [{ data: profile }, { data: contacts }, { data: vehicles }, { data: plateRows }] =
+    await Promise.all([
+      supabase.from('profiles').select('name').eq('id', user.id).single(),
+      supabase.from('contacts').select('phone,whatsapp,telegram').eq('user_id', user.id).maybeSingle(),
+      supabase
+        .from('vehicles')
+        .select('id,brand,model,color,year')
+        .eq('user_id', user.id)
+        .order('created_at'),
+      supabase.from('vehicle_plates').select('vehicle_id,plate').eq('user_id', user.id),
+    ])
+
+  const plates: Record<string, string> = {}
+  for (const p of (plateRows ?? []) as { vehicle_id: string; plate: string }[]) {
+    plates[p.vehicle_id] = p.plate
+  }
 
   return (
     <div className="space-y-6">
@@ -41,7 +48,12 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
           telegram: contacts?.telegram ?? '',
         }}
       />
-      <VehicleSection t={t} userId={user.id} vehicles={(vehicles ?? []) as Vehicle[]} />
+      <VehicleSection
+        t={t}
+        userId={user.id}
+        vehicles={(vehicles ?? []) as Vehicle[]}
+        plates={plates}
+      />
     </div>
   )
 }
