@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { Dict } from '@/lib/i18n'
+import type { Locale } from '@/lib/locales'
 
 export type Vehicle = {
   id: string
@@ -48,15 +49,25 @@ const BRANDS = [
   'Jetour',
   'Exeed',
 ]
+
+const COLORS: Record<Locale, string[]> = {
+  kk: ['Ақ', 'Қара', 'Күміс', 'Сұр', 'Қызыл', 'Көк', 'Жасыл', 'Сары', 'Қызғылт сары', 'Қоңыр', 'Беж'],
+  ru: ['Белый', 'Чёрный', 'Серебристый', 'Серый', 'Красный', 'Синий', 'Зелёный', 'Жёлтый', 'Оранжевый', 'Коричневый', 'Бежевый'],
+  zh: ['白色', '黑色', '银色', '灰色', '红色', '蓝色', '绿色', '黄色', '橙色', '棕色', '米色'],
+  en: ['White', 'Black', 'Silver', 'Gray', 'Red', 'Blue', 'Green', 'Yellow', 'Orange', 'Brown', 'Beige'],
+}
+
 const OTHER = '__other__'
 
 export default function VehicleSection({
   t,
+  locale,
   userId,
   vehicles,
   plates,
 }: {
   t: Dict
+  locale: Locale
   userId: string
   vehicles: Vehicle[]
   plates: Record<string, string>
@@ -65,7 +76,8 @@ export default function VehicleSection({
   const [brandSel, setBrandSel] = useState('')
   const [brandOther, setBrandOther] = useState('')
   const [model, setModel] = useState('')
-  const [color, setColor] = useState('')
+  const [colorSel, setColorSel] = useState('')
+  const [colorOther, setColorOther] = useState('')
   const [year, setYear] = useState('')
   const [plate, setPlate] = useState('')
   const [busy, setBusy] = useState(false)
@@ -74,7 +86,8 @@ export default function VehicleSection({
   async function add(e: React.FormEvent) {
     e.preventDefault()
     const brand = brandSel === OTHER ? brandOther.trim() : brandSel
-    if (!brand) return
+    const color = colorSel === OTHER ? colorOther.trim() : colorSel
+    if (!brand || !color) return
     setBusy(true)
     setError('')
     const supabase = createClient()
@@ -84,7 +97,7 @@ export default function VehicleSection({
         user_id: userId,
         brand,
         model: model.trim(),
-        color: color.trim(),
+        color,
         year: year ? Number(year) : null,
       })
       .select('id')
@@ -109,7 +122,8 @@ export default function VehicleSection({
     setBrandSel('')
     setBrandOther('')
     setModel('')
-    setColor('')
+    setColorSel('')
+    setColorOther('')
     setYear('')
     setPlate('')
     router.refresh()
@@ -180,7 +194,22 @@ export default function VehicleSection({
             className={`${input} col-span-2`}
           />
         )}
-        <input required placeholder={t.color} value={color} onChange={(e) => setColor(e.target.value)} className={input} />
+        <select
+          required
+          value={colorSel}
+          onChange={(e) => setColorSel(e.target.value)}
+          className={`${input} bg-white`}
+        >
+          <option value="" disabled>
+            {t.color}
+          </option>
+          {COLORS[locale].map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+          <option value={OTHER}>{t.reason_other}</option>
+        </select>
         <input
           type="number"
           min={1990}
@@ -190,6 +219,15 @@ export default function VehicleSection({
           onChange={(e) => setYear(e.target.value)}
           className={input}
         />
+        {colorSel === OTHER && (
+          <input
+            required
+            placeholder={t.color}
+            value={colorOther}
+            onChange={(e) => setColorOther(e.target.value)}
+            className={`${input} col-span-2`}
+          />
+        )}
         <div className="col-span-2 space-y-1">
           <input
             required
