@@ -9,11 +9,13 @@ import { createClient } from '@/lib/supabase/client'
 export default function Header({
   locale,
   t,
-  loggedIn,
+    loggedIn,
+  isAdmin,
 }: {
   locale: Locale
   t: Dict
-  loggedIn: boolean
+    loggedIn: boolean
+  isAdmin: boolean
 }) {
   const pathname = usePathname()
   const router = useRouter()
@@ -50,6 +52,13 @@ export default function Header({
             <Link href={`/${locale}/publish`}>{t.nav_publish}</Link>
             <Link href={`/${locale}/my-trips`}>{t.nav_my_trips}</Link>
             <Link href={`/${locale}/profile`}>{t.nav_profile}</Link>
+
+            {isAdmin && (
+              <Link href={`/${locale}/admin`} className="font-medium text-red-600">
+                {t.admin_title}
+              </Link>
+            )}
+
             <button onClick={logout} className="text-stone-500">
               {t.nav_logout}
             </button>
