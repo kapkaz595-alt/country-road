@@ -15,6 +15,7 @@ type ContactProp = React.ComponentProps<typeof ContactCard>['contact']
 type Ride = {
   id: string
   driver_id: string
+  vehicle_id: string | null
   from_point: string
   to_point: string
   depart_at: string
@@ -118,6 +119,21 @@ export default async function MyTripsPage({ params }: { params: Promise<{ locale
   ])
   const profiles = new Map(((profData ?? []) as Prof[]).map((p) => [p.id, p]))
   const contacts = new Map(((contData ?? []) as ContactRow[]).map((c) => [c.user_id, c]))
+
+  const plateVehicleIds = Array.from(
+    new Set(
+      myReqs
+        .filter((r) => r.status === 'accepted')
+        .map((r) => reqRides.get(r.ride_id)?.vehicle_id)
+        .filter((x): x is string => !!x),
+    ),
+  )
+  const { data: plateData } = plateVehicleIds.length
+    ? await supabase.from('vehicle_plates').select('vehicle_id,plate').in('vehicle_id', plateVehicleIds)
+    : { data: [] as { vehicle_id: string; plate: string }[] }
+  const plates = new Map(
+    ((plateData ?? []) as { vehicle_id: string; plate: string }[]).map((p) => [p.vehicle_id, p.plate]),
+  )
 
   const statusLabel = (s: string) => tr['status_' + s] ?? s
   const rideStatusLabel = (s: string) => tr['ride_status_' + s] ?? s
@@ -243,6 +259,15 @@ export default async function MyTripsPage({ params }: { params: Promise<{ locale
                   t={t}
                   contact={contacts.get(ride.driver_id) as unknown as ContactProp}
                 />
+              )}
+
+              {rq.status === 'accepted' && ride.vehicle_id && plates.get(ride.vehicle_id) && (
+                <p className="text-sm text-stone-700">
+                  {t.plate}:{' '}
+                  <span className="rounded bg-stone-100 px-2 py-0.5 font-mono">
+                    {plates.get(ride.vehicle_id)}
+                  </span>
+                </p>
               )}
 
               {rq.status === 'accepted' && (
