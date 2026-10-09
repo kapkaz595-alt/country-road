@@ -1,0 +1,21 @@
+{
+  "nav_my_trips": "Мои поездки",
+  "trips_title": "Мои поездки",
+  "trips_published": "Я опубликовал",
+  "trips_requested": "Я запросил",
+  "no_published": "Вы ещё не публиковали поездки",
+  "no_requested": "Вы ещё не отправляли заявки",
+  "requests_for_ride": "Заявки",
+  "no_requests_yet": "Заявок пока нет",
+  "accept": "Принять",
+  "decline": "Отклонить",
+  "cancel_ride": "Отменить поездку",
+  "confirm_cancel_ride": "Отменить эту поездку?",
+  "ride_status_published": "Опубликована",
+  "ride_status_confirmed": "Подтверждена",
+  "ride_status_completed": "Завершена",
+  "ride_status_cancelled": "Отменена",
+  "passenger_label": "Пассажир",
+  "no_contacts": "Контакты не указаны",
+  "seats_requested": "мест"
+}
