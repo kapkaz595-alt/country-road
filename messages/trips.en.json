@@ -1,0 +1,21 @@
+{
+  "nav_my_trips": "My trips",
+  "trips_title": "My trips",
+  "trips_published": "Published by me",
+  "trips_requested": "My requests",
+  "no_published": "You haven't published a ride yet",
+  "no_requested": "You haven't requested any rides yet",
+  "requests_for_ride": "Requests",
+  "no_requests_yet": "No requests yet",
+  "accept": "Accept",
+  "decline": "Decline",
+  "cancel_ride": "Cancel ride",
+  "confirm_cancel_ride": "Cancel this ride?",
+  "ride_status_published": "Published",
+  "ride_status_confirmed": "Confirmed",
+  "ride_status_completed": "Completed",
+  "ride_status_cancelled": "Cancelled",
+  "passenger_label": "Passenger",
+  "no_contacts": "No contact details provided",
+  "seats_requested": "seats"
+}
