@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { Dict } from '@/lib/i18n'
 import type { Locale } from '@/lib/locales'
+import { COLOR_KEYS, colorLabel } from '@/lib/colors'
 
 export type Vehicle = {
   id: string
@@ -49,13 +50,6 @@ const BRANDS = [
   'Jetour',
   'Exeed',
 ]
-
-const COLORS: Record<Locale, string[]> = {
-  kk: ['Ақ', 'Қара', 'Күміс', 'Сұр', 'Қызыл', 'Көк', 'Жасыл', 'Сары', 'Қызғылт сары', 'Қоңыр', 'Беж'],
-  ru: ['Белый', 'Чёрный', 'Серебристый', 'Серый', 'Красный', 'Синий', 'Зелёный', 'Жёлтый', 'Оранжевый', 'Коричневый', 'Бежевый'],
-  zh: ['白色', '黑色', '银色', '灰色', '红色', '蓝色', '绿色', '黄色', '橙色', '棕色', '米色'],
-  en: ['White', 'Black', 'Silver', 'Gray', 'Red', 'Blue', 'Green', 'Yellow', 'Orange', 'Brown', 'Beige'],
-}
 
 const OTHER = '__other__'
 
@@ -151,7 +145,7 @@ export default function VehicleSection({
               className="flex items-center justify-between gap-3 rounded-lg bg-stone-50 px-3 py-2 text-sm"
             >
               <span>
-                {v.brand} {v.model} · {v.color}
+                                {v.brand} {v.model} · {colorLabel(v.color, locale)}
                 {v.year ? ` · ${v.year}` : ''}
                 {plates[v.id] ? (
                   <span className="ml-2 rounded bg-white px-2 py-0.5 font-mono text-xs ring-1 ring-stone-300">
@@ -203,9 +197,9 @@ export default function VehicleSection({
           <option value="" disabled>
             {t.color}
           </option>
-          {COLORS[locale].map((c) => (
-            <option key={c} value={c}>
-              {c}
+                    {COLOR_KEYS.map((k) => (
+            <option key={k} value={k}>
+              {colorLabel(k, locale)}
             </option>
           ))}
           <option value={OTHER}>{t.reason_other}</option>
