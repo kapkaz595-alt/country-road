@@ -48,8 +48,9 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
           telegram: contacts?.telegram ?? '',
         }}
       />
-      <VehicleSection
+            <VehicleSection
         t={t}
+        locale={locale}
         userId={user.id}
         vehicles={(vehicles ?? []) as Vehicle[]}
         plates={plates}
