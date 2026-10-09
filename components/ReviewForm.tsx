@@ -125,7 +125,7 @@ export default function ReviewForm({
           onClick={() => setOpen(false)}
           className="rounded-lg border border-stone-300 px-4 py-1.5 text-stone-600"
         >
-          {t.cancel}
+                    ✕
         </button>
       </div>
     </form>
