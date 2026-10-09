@@ -28,10 +28,16 @@ export default async function LocaleLayout({
     data: { user },
   } = await supabase.auth.getUser()
 
+  let isAdmin = false
+  if (user) {
+    const { data } = await supabase.rpc('is_admin')
+    isAdmin = !!data
+  }
+
   return (
     <html lang={locale}>
       <body>
-        <Header locale={locale} t={t} loggedIn={!!user} />
+        <Header locale={locale} t={t} loggedIn={!!user} isAdmin={isAdmin} />
         <main className="mx-auto max-w-2xl px-4 pb-24 pt-6">{children}</main>
       </body>
     </html>
