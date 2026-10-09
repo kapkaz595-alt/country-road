@@ -1,0 +1,19 @@
+{
+  "complete_ride": "Complete ride",
+  "confirm_complete_ride": "Mark this ride as completed?",
+  "err_not_departed": "The departure time has not come yet.",
+  "review_leave": "Leave a review",
+  "review_title": "Review",
+  "review_for": "Review for",
+  "review_rate": "Rating",
+  "review_tags": "Tags",
+  "review_comment": "Comment (optional)",
+  "review_submit": "Submit",
+  "review_done": "Reviewed",
+  "err_already_reviewed": "You have already left a review.",
+  "tag_punctual": "Punctual",
+  "tag_friendly": "Friendly",
+  "tag_safe": "Safe driving",
+  "tag_clean": "Clean car",
+  "tag_polite": "Polite"
+}
