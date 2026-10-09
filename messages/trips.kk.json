@@ -1,0 +1,21 @@
+{
+  "nav_my_trips": "Менің сапарларым",
+  "trips_title": "Менің сапарларым",
+  "trips_published": "Мен жариялағандар",
+  "trips_requested": "Мен өтініш бергендер",
+  "no_published": "Сіз әлі сапар жарияламадыңыз",
+  "no_requested": "Сіз әлі өтініш бермедіңіз",
+  "requests_for_ride": "Өтініштер",
+  "no_requests_yet": "Әзірге өтініш жоқ",
+  "accept": "Қабылдау",
+  "decline": "Қабылдамау",
+  "cancel_ride": "Сапарды бас тарту",
+  "confirm_cancel_ride": "Сапарды бас тартуды растайсыз ба?",
+  "ride_status_published": "Жарияланған",
+  "ride_status_confirmed": "Расталған",
+  "ride_status_completed": "Аяқталған",
+  "ride_status_cancelled": "Бас тартылған",
+  "passenger_label": "Жолаушы",
+  "no_contacts": "Байланыс деректері көрсетілмеген",
+  "seats_requested": "орын"
+}
