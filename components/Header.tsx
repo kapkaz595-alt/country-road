@@ -43,11 +43,12 @@ export default function Header({
           ))}
         </div>
       </div>
-      <nav className="mx-auto flex max-w-2xl flex-wrap gap-x-5 gap-y-1 px-4 pb-2 text-sm text-stone-600">
+      <nav className="mx-auto flex max-w-2xl flex-wrap gap-5 px-4 pb-2 text-sm text-stone-600">
         <Link href={`/${locale}`}>{t.nav_home}</Link>
-        <Link href={`/${locale}/publish`}>{t.nav_publish}</Link>
         {loggedIn ? (
           <>
+            <Link href={`/${locale}/publish`}>{t.nav_publish}</Link>
+            <Link href={`/${locale}/my-trips`}>{t.nav_my_trips}</Link>
             <Link href={`/${locale}/profile`}>{t.nav_profile}</Link>
             <button onClick={logout} className="text-stone-500">
               {t.nav_logout}
