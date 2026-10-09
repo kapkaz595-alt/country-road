@@ -8,6 +8,7 @@ import RequestActions from '@/components/RequestActions'
 import CancelRideButton from '@/components/CancelRideButton'
 import CompleteRideButton from '@/components/CompleteRideButton'
 import ReviewForm from '@/components/ReviewForm'
+import ReportForm from '@/components/ReportForm'
 
 type ContactProp = React.ComponentProps<typeof ContactCard>['contact']
 
@@ -175,6 +176,16 @@ export default async function MyTripsPage({ params }: { params: Promise<{ locale
                           contact={contacts.get(rq.passenger_id) as unknown as ContactProp}
                         />
                       )}
+
+                      {rq.status === 'accepted' && (
+                        <ReportForm
+                          t={t}
+                          rideId={ride.id}
+                          reporterId={user.id}
+                          reportedUserId={rq.passenger_id}
+                        />
+                      )}
+
                       {rq.status === 'accepted' && done && (
                         reviewed.has(`${ride.id}:${rq.passenger_id}`) ? (
                           <p className="text-xs text-emerald-700">✓ {t.review_done}</p>
@@ -233,6 +244,16 @@ export default async function MyTripsPage({ params }: { params: Promise<{ locale
                   contact={contacts.get(ride.driver_id) as unknown as ContactProp}
                 />
               )}
+
+              {rq.status === 'accepted' && (
+                <ReportForm
+                  t={t}
+                  rideId={ride.id}
+                  reporterId={user.id}
+                  reportedUserId={ride.driver_id}
+                />
+              )}
+
               {rq.status === 'accepted' && ride.status === 'completed' && (
                 reviewed.has(`${ride.id}:${ride.driver_id}`) ? (
                   <p className="text-xs text-emerald-700">✓ {t.review_done}</p>
