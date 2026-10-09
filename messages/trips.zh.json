@@ -1,0 +1,21 @@
+{
+  "nav_my_trips": "我的行程",
+  "trips_title": "我的行程",
+  "trips_published": "我发布的",
+  "trips_requested": "我申请的",
+  "no_published": "你还没有发布过行程",
+  "no_requested": "你还没有申请过座位",
+  "requests_for_ride": "收到的申请",
+  "no_requests_yet": "暂无申请",
+  "accept": "接受",
+  "decline": "拒绝",
+  "cancel_ride": "取消行程",
+  "confirm_cancel_ride": "确定要取消这趟行程吗？",
+  "ride_status_published": "已发布",
+  "ride_status_confirmed": "已确认",
+  "ride_status_completed": "已完成",
+  "ride_status_cancelled": "已取消",
+  "passenger_label": "乘客",
+  "no_contacts": "未填写联系方式",
+  "seats_requested": "座"
+}
