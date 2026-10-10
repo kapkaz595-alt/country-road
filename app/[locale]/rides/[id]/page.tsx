@@ -5,6 +5,8 @@ import { getDict } from '@/lib/i18n'
 import { createClient } from '@/lib/supabase/server'
 import { formatDateTime, formatPrice, pickName, type CityNames } from '@/lib/format'
 import RequestPanel, { type ExistingRequest } from '@/components/RequestPanel'
+import RideExtras from '@/components/RideExtras'
+import { colorLabel } from '@/lib/colors'
 
 type Ride = {
   id: string
@@ -19,6 +21,9 @@ type Ride = {
   price_per_seat: number
   note: string | null
   status: string
+  no_smoking: boolean | null
+  no_pets: boolean | null
+  talk: string | null
 }
 type Driver = {
   name: string
@@ -53,7 +58,7 @@ export default async function RideDetailPage({
   const { data: rideData } = await supabase
     .from('rides')
     .select(
-      'id,driver_id,vehicle_id,route_id,from_point,to_point,depart_at,seats_left,seats_total,price_per_seat,note,status'
+            'id,driver_id,vehicle_id,route_id,from_point,to_point,depart_at,seats_left,seats_total,price_per_seat,note,status,no_smoking,no_pets,talk'
     )
     .eq('id', id)
     .maybeSingle()
@@ -141,7 +146,7 @@ export default async function RideDetailPage({
           {vehicle && (
             <Row
               label={t.ride_vehicle}
-              value={`${vehicle.brand} ${vehicle.model} · ${vehicle.color}${
+                            value={`${vehicle.brand} ${vehicle.model} · ${colorLabel(vehicle.color, locale)}${
                 vehicle.year ? ` · ${vehicle.year}` : ''
               }`}
             />
@@ -179,6 +184,12 @@ export default async function RideDetailPage({
           </ul>
         )}
       </section>
+
+      <RideExtras
+        t={t}
+        title={routeLabel}
+        prefs={{ no_smoking: ride.no_smoking, no_pets: ride.no_pets, talk: ride.talk }}
+      />
 
       {!user ? (
         <Link
