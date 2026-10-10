@@ -11,5 +11,6 @@
   "approve_note": "Your booking won't be confirmed until the driver approves your request.",
   "share_btn": "Share ride",
   "share_copied": "Link copied",
-  "disclaimer_text": "This ride is offered by a non-professional driver. The platform only connects drivers and passengers, is not a party to the ride, and does not handle any payments. Cost sharing is settled directly between the driver and the passenger."
+  "disclaimer_text": "This ride is offered by a non-professional driver. The platform only connects drivers and passengers, is not a party to the ride, and does not handle any payments. Cost sharing is settled directly between the driver and the passenger.",
+  "eco_text": "By choosing this trip, you help avoid ≈{saved} kg of CO₂. Your seat accounts for {total} kg of CO₂ ({pct}% less than travelling alone by car). This is an estimate."
 }
