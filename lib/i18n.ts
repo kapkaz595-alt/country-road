@@ -26,6 +26,10 @@ import ckk from '@/messages/vehicle.kk.json'
 import cru from '@/messages/vehicle.ru.json'
 import czh from '@/messages/vehicle.zh.json'
 import cen from '@/messages/vehicle.en.json'
+import pkk from '@/messages/prefs.kk.json'
+import pru from '@/messages/prefs.ru.json'
+import pzh from '@/messages/prefs.zh.json'
+import pen from '@/messages/prefs.en.json'
 import type { Locale } from './locales'
 
 export type Dict = typeof kk &
@@ -34,15 +38,16 @@ export type Dict = typeof kk &
   typeof tkk &
   typeof vkk &
   typeof akk &
-  typeof ckk
+  typeof ckk &
+  typeof pkk
 
-const base: Dict = { ...kk, ...skk, ...rkk, ...tkk, ...vkk, ...akk, ...ckk }
+const base: Dict = { ...kk, ...skk, ...rkk, ...tkk, ...vkk, ...akk, ...ckk, ...pkk }
 
 const all: Record<Locale, Partial<Dict>> = {
   kk: base,
-  ru: { ...ru, ...sru, ...rru, ...tru, ...vru, ...aru, ...cru },
-  zh: { ...zh, ...szh, ...rzh, ...tzh, ...vzh, ...azh, ...czh },
-  en: { ...en, ...sen, ...ren, ...ten, ...ven, ...aen, ...cen },
+  ru: { ...ru, ...sru, ...rru, ...tru, ...vru, ...aru, ...cru, ...pru },
+  zh: { ...zh, ...szh, ...rzh, ...tzh, ...vzh, ...azh, ...czh, ...pzh },
+  en: { ...en, ...sen, ...ren, ...ten, ...ven, ...aen, ...cen, ...pen },
 }
 
 export function getDict(locale: Locale): Dict {
