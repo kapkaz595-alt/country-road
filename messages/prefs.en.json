@@ -1,0 +1,15 @@
+{
+  "pref_title": "Ride rules",
+  "show_no_smoking": "No smoking, please",
+  "show_smoking_ok": "Smoking allowed",
+  "show_no_pets": "No pets",
+  "show_pets_ok": "Pets allowed",
+  "pref_talk": "Chat in the car",
+  "talk_quiet": "I prefer a quiet ride",
+  "talk_chatty": "I love to chat",
+  "talk_flexible": "Depends on the mood",
+  "approve_note": "Your booking won't be confirmed until the driver approves your request.",
+  "share_btn": "Share ride",
+  "share_copied": "Link copied",
+  "disclaimer_text": "This ride is offered by a non-professional driver. The platform only connects drivers and passengers, is not a party to the ride, and does not handle any payments. Cost sharing is settled directly between the driver and the passenger."
+}
