@@ -5,6 +5,7 @@ import { getDict } from '@/lib/i18n'
 import { createClient } from '@/lib/supabase/server'
 import AdminReportActions from '@/components/AdminReportActions'
 import AdminRouteRow from '@/components/AdminRouteRow'
+import AdminStats, { type Stats } from '@/components/AdminStats'
 
 type Report = {
   id: string
@@ -42,6 +43,9 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
 
   const { data: isAdmin } = await supabase.rpc('is_admin')
   if (!isAdmin) notFound()
+
+  const { data: statsData } = await supabase.rpc('admin_stats')
+  const stats = (statsData ?? null) as Stats | null
 
   const [{ data: repData }, { data: routeData }, { data: cityData }] = await Promise.all([
     supabase.from('reports').select('*').order('created_at', { ascending: false }).limit(100),
@@ -85,6 +89,8 @@ export default async function AdminPage({ params }: { params: Promise<{ locale: 
   return (
     <div className="space-y-8">
       <h1 className="text-xl font-semibold">{t.admin_title}</h1>
+
+      <AdminStats stats={stats} />
 
       <section className="space-y-3">
         <h2 className="font-medium">{t.admin_reports}</h2>
