@@ -60,6 +60,9 @@ export default function PublishForm({
   const [fromPoint, setFromPoint] = useState('')
   const [toPoint, setToPoint] = useState('')
   const [note, setNote] = useState('')
+  const [noSmoking, setNoSmoking] = useState(true)
+  const [noPets, setNoPets] = useState(true)
+  const [talk, setTalk] = useState('flexible')
   const [ownTrip, setOwnTrip] = useState(false)
   const [busy, setBusy] = useState(false)
   const [msg, setMsg] = useState('')
@@ -107,6 +110,9 @@ export default function PublishForm({
         depart_at: when.toISOString(),
         seats_total: Number(seats),
         note: note.trim() || null,
+        no_smoking: noSmoking,
+        no_pets: noPets,
+        talk,
         own_trip_confirmed: ownTrip,
       })
     setBusy(false)
@@ -206,6 +212,26 @@ export default function PublishForm({
         <span className="text-stone-600">{t.to_point}</span>
         <input required value={toPoint} onChange={(e) => setToPoint(e.target.value)} className={input} />
       </label>
+
+      <fieldset className="space-y-3 rounded-lg border border-stone-200 p-4 text-sm">
+        <legend className="px-1 text-stone-600">{t.pref_title}</legend>
+        <label className="flex items-center gap-3">
+          <input type="checkbox" checked={noSmoking} onChange={(e) => setNoSmoking(e.target.checked)} />
+          <span>{t.show_no_smoking}</span>
+        </label>
+        <label className="flex items-center gap-3">
+          <input type="checkbox" checked={noPets} onChange={(e) => setNoPets(e.target.checked)} />
+          <span>{t.show_no_pets}</span>
+        </label>
+        <label className="block">
+          <span className="text-stone-600">{t.pref_talk}</span>
+          <select value={talk} onChange={(e) => setTalk(e.target.value)} className={input}>
+            <option value="quiet">{t.talk_quiet}</option>
+            <option value="chatty">{t.talk_chatty}</option>
+            <option value="flexible">{t.talk_flexible}</option>
+          </select>
+        </label>
+      </fieldset>
 
       <label className="block text-sm">
         <span className="text-stone-600">{t.note}</span>
