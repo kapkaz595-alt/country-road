@@ -67,13 +67,19 @@ export default async function RideDetailPage({
 
   const { data: routeData } = await supabase
     .from('routes')
-    .select('from_city_id,to_city_id')
+   .select('from_city_id,to_city_id,distance_km')
     .eq('id', ride.route_id)
     .maybeSingle()
 
-  let routeLabel = ''
+    let routeLabel = ''
+  let distanceKm: number | null = null
   if (routeData) {
-    const route = routeData as { from_city_id: string; to_city_id: string }
+    const route = routeData as {
+      from_city_id: string
+      to_city_id: string
+      distance_km: number | null
+    }
+    distanceKm = route.distance_km
     const { data: cityData } = await supabase
       .from('cities')
       .select('id,name_kk,name_ru,name_zh,name_en')
@@ -185,10 +191,13 @@ export default async function RideDetailPage({
         )}
       </section>
 
-      <RideExtras
+            <RideExtras
         t={t}
         title={routeLabel}
         prefs={{ no_smoking: ride.no_smoking, no_pets: ride.no_pets, talk: ride.talk }}
+        distanceKm={distanceKm}
+        seatsTotal={ride.seats_total}
+        seatsLeft={ride.seats_left}
       />
 
       {!user ? (
