@@ -6,6 +6,7 @@ import { createClient } from '@/lib/supabase/client'
 import type { Dict } from '@/lib/i18n'
 import type { Locale } from '@/lib/locales'
 import { COLOR_KEYS, colorLabel } from '@/lib/colors'
+import { MODELS } from '@/lib/carModels'
 
 export type Vehicle = {
   id: string
@@ -70,6 +71,7 @@ export default function VehicleSection({
   const [brandSel, setBrandSel] = useState('')
   const [brandOther, setBrandOther] = useState('')
   const [model, setModel] = useState('')
+  const [modelSel, setModelSel] = useState('')
   const [colorSel, setColorSel] = useState('')
   const [colorOther, setColorOther] = useState('')
   const [year, setYear] = useState('')
@@ -81,7 +83,8 @@ export default function VehicleSection({
     e.preventDefault()
     const brand = brandSel === OTHER ? brandOther.trim() : brandSel
     const color = colorSel === OTHER ? colorOther.trim() : colorSel
-    if (!brand || !color) return
+    const modelName = brandSel === OTHER || modelSel === OTHER ? model.trim() : modelSel
+    if (!brand || !color || !modelName) return
     setBusy(true)
     setError('')
     const supabase = createClient()
@@ -90,7 +93,7 @@ export default function VehicleSection({
       .insert({
         user_id: userId,
         brand,
-        model: model.trim(),
+        model: modelName,
         color,
         year: year ? Number(year) : null,
       })
@@ -116,6 +119,7 @@ export default function VehicleSection({
     setBrandSel('')
     setBrandOther('')
     setModel('')
+    setModelSel('')
     setColorSel('')
     setColorOther('')
     setYear('')
@@ -145,7 +149,7 @@ export default function VehicleSection({
               className="flex items-center justify-between gap-3 rounded-lg bg-stone-50 px-3 py-2 text-sm"
             >
               <span>
-                                {v.brand} {v.model} · {colorLabel(v.color, locale)}
+                {v.brand} {v.model} · {colorLabel(v.color, locale)}
                 {v.year ? ` · ${v.year}` : ''}
                 {plates[v.id] ? (
                   <span className="ml-2 rounded bg-white px-2 py-0.5 font-mono text-xs ring-1 ring-stone-300">
@@ -165,7 +169,11 @@ export default function VehicleSection({
         <select
           required
           value={brandSel}
-          onChange={(e) => setBrandSel(e.target.value)}
+          onChange={(e) => {
+            setBrandSel(e.target.value)
+            setModelSel('')
+            setModel('')
+          }}
           className={`${input} bg-white`}
         >
           <option value="" disabled>
@@ -178,7 +186,42 @@ export default function VehicleSection({
           ))}
           <option value={OTHER}>{t.reason_other}</option>
         </select>
-        <input required placeholder={t.model} value={model} onChange={(e) => setModel(e.target.value)} className={input} />
+        {brandSel === OTHER || !MODELS[brandSel] ? (
+          <input
+            required
+            disabled={!brandSel}
+            placeholder={t.model}
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+            className={input}
+          />
+        ) : (
+          <select
+            required
+            value={modelSel}
+            onChange={(e) => setModelSel(e.target.value)}
+            className={`${input} bg-white`}
+          >
+            <option value="" disabled>
+              {t.model}
+            </option>
+            {MODELS[brandSel].map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+            <option value={OTHER}>{t.reason_other}</option>
+          </select>
+        )}
+        {brandSel !== OTHER && MODELS[brandSel] && modelSel === OTHER && (
+          <input
+            required
+            placeholder={t.model}
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+            className={`${input} col-span-2`}
+          />
+        )}
         {brandSel === OTHER && (
           <input
             required
@@ -197,7 +240,7 @@ export default function VehicleSection({
           <option value="" disabled>
             {t.color}
           </option>
-                    {COLOR_KEYS.map((k) => (
+          {COLOR_KEYS.map((k) => (
             <option key={k} value={k}>
               {colorLabel(k, locale)}
             </option>
