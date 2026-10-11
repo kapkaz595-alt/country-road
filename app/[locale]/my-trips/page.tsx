@@ -138,6 +138,13 @@ export default async function MyTripsPage({ params }: { params: Promise<{ locale
   const statusLabel = (s: string) => tr['status_' + s] ?? s
   const rideStatusLabel = (s: string) => tr['ride_status_' + s] ?? s
 
+  const expiredLabel =
+    ({ kk: 'Мерзімі өтті', ru: 'Истекла', zh: '已过期', en: 'Expired' } as Record<string, string>)[locale] ??
+    'Expired'
+  const nowMs = Date.now()
+  const isPast = (iso: string, status: string) =>
+    (status === 'published' || status === 'confirmed') && new Date(iso).getTime() < nowMs
+
   const rating = (p?: Prof) =>
     p && p.rating_count ? `★ ${Number(p.rating_avg ?? 0).toFixed(1)} (${p.rating_count})` : ''
 
@@ -155,13 +162,13 @@ export default async function MyTripsPage({ params }: { params: Promise<{ locale
           const open = ride.status === 'published' || ride.status === 'confirmed'
           const done = ride.status === 'completed'
           return (
-            <div key={ride.id} className={card}>
+                        <div key={ride.id} className={`${card} ${isPast(ride.depart_at, ride.status) ? 'opacity-60' : ''}`}>
               <div className="flex items-start justify-between gap-3">
                 <Link href={`/${locale}/rides/${ride.id}`} className="font-medium text-emerald-800">
                   {ride.from_point} → {ride.to_point}
                 </Link>
                 <span className="shrink-0 rounded-full bg-stone-100 px-2 py-0.5 text-xs">
-                  {rideStatusLabel(ride.status)}
+                                    {isPast(ride.depart_at, ride.status) ? expiredLabel : rideStatusLabel(ride.status)}
                 </span>
               </div>
               <p className="text-sm text-stone-600">
@@ -249,7 +256,8 @@ export default async function MyTripsPage({ params }: { params: Promise<{ locale
                 </span>
               </div>
               <p className="text-sm text-stone-600">
-                {fmt(ride.depart_at)} · {rq.seats} · {ride.price_per_seat} ₸ · {rideStatusLabel(ride.status)}
+                                {fmt(ride.depart_at)} · {rq.seats} · {ride.price_per_seat} ₸ ·{' '}
+                {isPast(ride.depart_at, ride.status) ? expiredLabel : rideStatusLabel(ride.status)}
               </p>
               <p className="text-sm text-stone-600">
                 {d?.name || '—'} {rating(d)}
