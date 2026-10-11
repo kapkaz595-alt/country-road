@@ -7,6 +7,21 @@ import type { Dict } from '@/lib/i18n'
 
 type Initial = { name: string; phone: string; whatsapp: string; telegram: string }
 
+function formatPhone(raw: string): string {
+  const digits = raw.replace(/\D/g, '')
+  const national = raw.startsWith('+')
+    ? digits.slice(1)
+    : digits.length === 11 && (digits[0] === '7' || digits[0] === '8')
+      ? digits.slice(1)
+      : digits
+  const n = national.slice(0, 10)
+  if (!n) return ''
+  const parts = [n.slice(0, 3), n.slice(3, 6), n.slice(6, 8), n.slice(8, 10)].filter(Boolean)
+  return '+7-' + parts.join('-')
+}
+
+const PHONE_PATTERN = '\\+7-\\d{3}-\\d{3}-\\d{2}-\\d{2}'
+
 export default function ProfileForm({
   t,
   userId,
@@ -28,6 +43,9 @@ export default function ProfileForm({
 
   const set = (k: keyof Initial) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm({ ...form, [k]: e.target.value })
+
+  const setPhone = (k: 'phone' | 'whatsapp') => (e: React.ChangeEvent<HTMLInputElement>) =>
+    setForm({ ...form, [k]: formatPhone(e.target.value) })
 
   async function save(e: React.FormEvent) {
     e.preventDefault()
@@ -71,11 +89,11 @@ export default function ProfileForm({
       </div>
       <label className="block text-sm">
         <span className="text-stone-600">{t.phone}</span>
-        <input type="tel" value={form.phone} onChange={set('phone')} placeholder="+7 ..." className={input} />
+                <input type="tel" value={form.phone} onChange={setPhone('phone')} placeholder="+7-123-456-78-90" pattern={PHONE_PATTERN} title="+7-123-456-78-90" className={input} />
       </label>
       <label className="block text-sm">
         <span className="text-stone-600">{t.whatsapp}</span>
-        <input value={form.whatsapp} onChange={set('whatsapp')} placeholder="+7 ..." className={input} />
+                <input type="tel" value={form.whatsapp} onChange={setPhone('whatsapp')} placeholder="+7-123-456-78-90" pattern={PHONE_PATTERN} title="+7-123-456-78-90" className={input} />
       </label>
       <label className="block text-sm">
         <span className="text-stone-600">{t.telegram}</span>
