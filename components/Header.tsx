@@ -6,6 +6,13 @@ import { locales, localeNames, type Locale } from '@/lib/locales'
 import type { Dict } from '@/lib/i18n'
 import { createClient } from '@/lib/supabase/client'
 
+const TAGLINE: Record<Locale, string> = {
+  kk: 'Бізбен бірге эко сапар',
+  ru: 'Эко-поездки вместе с нами',
+  zh: '与我们一起，绿色出行',
+  en: 'Eco trips, together with us',
+}
+
 export default function Header({
   locale,
   t,
@@ -30,8 +37,9 @@ export default function Header({
   return (
     <header className="sticky top-0 z-10 border-b border-stone-200 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
-        <Link href={`/${locale}`} className="text-lg font-bold tracking-tight text-emerald-700">
-          Birge
+                <Link href={`/${locale}`} className="block leading-tight">
+          <span className="block text-lg font-bold tracking-tight text-emerald-700">Birge</span>
+          <span className="block text-[11px] text-stone-500">{TAGLINE[locale]}</span>
         </Link>
         <div className="flex items-center gap-3 text-sm">
           {locales.map((l) => (
