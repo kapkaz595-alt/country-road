@@ -3,8 +3,6 @@
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { locales, localeNames, type Locale } from '@/lib/locales'
-import type { Dict } from '@/lib/i18n'
-import { createClient } from '@/lib/supabase/client'
 
 const TAGLINE: Record<Locale, string> = {
   kk: 'Бізбен бірге эко сапар',
@@ -13,68 +11,31 @@ const TAGLINE: Record<Locale, string> = {
   en: 'Eco trips, together with us',
 }
 
-export default function Header({
-  locale,
-  t,
-    loggedIn,
-  isAdmin,
-}: {
-  locale: Locale
-  t: Dict
-    loggedIn: boolean
-  isAdmin: boolean
-}) {
+export default function Header({ locale }: { locale: Locale }) {
   const pathname = usePathname()
   const router = useRouter()
   const rest = pathname.replace(/^\/(kk|ru|zh|en)/, '')
 
-  async function logout() {
-    await createClient().auth.signOut()
-    router.push(`/${locale}`)
-    router.refresh()
-  }
-
   return (
     <header className="sticky top-0 z-10 border-b border-stone-200 bg-white/90 backdrop-blur">
-      <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
-                <Link href={`/${locale}`} className="block leading-tight">
-          <span className="block text-lg font-bold tracking-tight text-emerald-700">Birge</span>
+      <div className="mx-auto flex max-w-2xl items-center justify-between gap-3 px-4 py-3">
+        <Link href={`/${locale}`} className="block leading-tight">
+          <span className="block text-xl font-bold tracking-tight text-emerald-700">Birge</span>
           <span className="block text-[11px] text-stone-500">{TAGLINE[locale]}</span>
         </Link>
-        <div className="flex items-center gap-3 text-sm">
+        <select
+          aria-label="Language"
+          value={locale}
+          onChange={(e) => router.push(`/${e.target.value}${rest}`)}
+          className="rounded-full border border-stone-300 bg-white px-3 py-1.5 text-sm font-medium text-stone-700"
+        >
           {locales.map((l) => (
-            <Link
-              key={l}
-              href={`/${l}${rest}`}
-              className={l === locale ? 'font-semibold text-emerald-700' : 'text-stone-500'}
-            >
+            <option key={l} value={l}>
               {localeNames[l]}
-            </Link>
+            </option>
           ))}
-        </div>
+        </select>
       </div>
-      <nav className="mx-auto flex max-w-2xl flex-wrap gap-5 px-4 pb-2 text-sm text-stone-600">
-        <Link href={`/${locale}`}>{t.nav_home}</Link>
-        {loggedIn ? (
-          <>
-            <Link href={`/${locale}/publish`}>{t.nav_publish}</Link>
-            <Link href={`/${locale}/my-trips`}>{t.nav_my_trips}</Link>
-            <Link href={`/${locale}/profile`}>{t.nav_profile}</Link>
-
-            {isAdmin && (
-              <Link href={`/${locale}/admin`} className="font-medium text-red-600">
-                {t.admin_title}
-              </Link>
-            )}
-
-            <button onClick={logout} className="text-stone-500">
-              {t.nav_logout}
-            </button>
-          </>
-        ) : (
-          <Link href={`/${locale}/login`}>{t.nav_login}</Link>
-        )}
-      </nav>
     </header>
   )
 }
