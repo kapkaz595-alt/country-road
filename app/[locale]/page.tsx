@@ -109,9 +109,13 @@ export default async function HomePage({
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl bg-emerald-700 p-5 text-white">
-        <h1 className="text-xl font-bold leading-snug">{t.home_title}</h1>
-        <p className="mt-1 text-sm text-emerald-50">{t.rule}</p>
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-700 to-emerald-600 p-6 text-white">
+        <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/10" />
+        <div className="pointer-events-none absolute -bottom-10 right-10 h-24 w-24 rounded-full bg-white/10" />
+        <h1 className="relative text-2xl font-bold leading-snug">{t.home_title}</h1>
+        <p className="relative mt-2 inline-block rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-emerald-50">
+          {t.rule}
+        </p>
       </div>
 
       <SearchForm
@@ -123,9 +127,9 @@ export default async function HomePage({
       />
 
       <section className="space-y-3">
-        <h2 className="font-semibold">{searched ? t.search_results : t.upcoming_rides}</h2>
+        <h2 className="text-lg font-bold">{searched ? t.search_results : t.upcoming_rides}</h2>
         {rides.length === 0 ? (
-          <p className="rounded-lg bg-stone-100 px-4 py-6 text-center text-sm text-stone-600">
+          <p className="rounded-3xl border border-dashed border-stone-300 bg-white px-4 py-8 text-center text-sm text-stone-500">
             {t.no_rides}
           </p>
         ) : (
@@ -143,12 +147,12 @@ export default async function HomePage({
         )}
       </section>
 
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+      <div className="rounded-3xl border border-emerald-200 bg-emerald-50 p-5">
         <p className="font-semibold text-emerald-900">{t.home_publish_q}</p>
         <p className="mt-1 text-sm text-emerald-800">{t.publish_sub}</p>
         <Link
           href={`/${locale}/publish`}
-          className="mt-3 inline-block rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white"
+          className="mt-3 inline-block rounded-full bg-emerald-700 px-5 py-2 text-sm font-medium text-white"
         >
           {t.publish_title}
         </Link>
