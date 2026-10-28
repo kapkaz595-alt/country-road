@@ -1,99 +1,53 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import type { Locale } from '@/lib/locales'
 import type { Dict } from '@/lib/i18n'
 
 export default function LoginForm({ locale, t }: { locale: Locale; t: Dict }) {
-  const router = useRouter()
-  const [mode, setMode] = useState<'login' | 'signup'>('login')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [busy, setBusy] = useState(false)
-  const [msg, setMsg] = useState('')
-  const [isError, setIsError] = useState(false)
+  const [error, setError] = useState('')
 
-  async function submit(e: React.FormEvent) {
-    e.preventDefault()
+  async function signInWithGoogle() {
     setBusy(true)
-    setMsg('')
-    setIsError(false)
-    const supabase = createClient()
-
-    if (mode === 'signup') {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${location.origin}/auth/callback?next=/${locale}/profile`,
-        },
-      })
-      if (error) {
-        setIsError(true)
-        setMsg(error.message || t.error_generic)
-      } else if (data.session) {
-        router.push(`/${locale}/profile`)
-        router.refresh()
-      } else {
-        setMsg(t.check_email)
-      }
-    } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) {
-        setIsError(true)
-        setMsg(error.message || t.error_generic)
-      } else {
-        router.push(`/${locale}/profile`)
-        router.refresh()
-      }
+    setError('')
+    const { error: authError } = await createClient().auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${location.origin}/auth/callback?next=/${locale}/profile`,
+      },
+    })
+    if (authError) {
+      setError(t.login_google_err)
+      setBusy(false)
     }
-    setBusy(false)
   }
 
   return (
-    <form onSubmit={submit} className="space-y-4 rounded-2xl border border-stone-200 bg-white p-5">
-      <h1 className="text-xl font-semibold">{mode === 'login' ? t.login_title : t.signup_title}</h1>
-      <label className="block text-sm">
-        <span className="text-stone-600">{t.email}</span>
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2"
-        />
-      </label>
-      <label className="block text-sm">
-        <span className="text-stone-600">{t.password}</span>
-        <input
-          type="password"
-          required
-          minLength={6}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-stone-300 px-3 py-2"
-        />
-      </label>
-      {msg && <p className={isError ? 'text-sm text-red-600' : 'text-sm text-emerald-700'}>{msg}</p>}
-      <button
-        type="submit"
-        disabled={busy}
-        className="w-full rounded-lg bg-emerald-700 py-2.5 font-medium text-white disabled:opacity-60"
-      >
-        {mode === 'login' ? t.submit_login : t.submit_signup}
-      </button>
+    <div className="space-y-5 rounded-3xl border border-stone-200 bg-white p-6 text-center">
+      <div>
+        <p className="text-2xl font-bold tracking-tight text-emerald-700">Birge</p>
+        <h1 className="mt-3 text-lg font-semibold">{t.login_title}</h1>
+        <p className="mt-1 text-sm text-stone-500">{t.login_google_hint}</p>
+      </div>
+
       <button
         type="button"
-        onClick={() => {
-          setMode(mode === 'login' ? 'signup' : 'login')
-          setMsg('')
-        }}
-        className="w-full text-sm text-stone-500"
+        onClick={signInWithGoogle}
+        disabled={busy}
+        className="flex w-full items-center justify-center gap-3 rounded-full border border-stone-300 bg-white py-3 text-sm font-medium text-stone-800 shadow-sm transition hover:bg-stone-50 disabled:opacity-60"
       >
-        {mode === 'login' ? t.switch_to_signup : t.switch_to_login}
+        <svg viewBox="0 0 48 48" className="h-5 w-5" aria-hidden="true">
+          <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.1C12.4 13.6 17.7 9.5 24 9.5z" />
+          <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.6z" />
+          <path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.9-6.1A24 24 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6.1z" />
+          <path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.1-13.5-9.8l-7.9 6.1C6.5 42.6 14.6 48 24 48z" />
+        </svg>
+        {t.login_google}
       </button>
-    </form>
+
+      {error && <p className="text-sm text-red-600">{error}</p>}
+    </div>
   )
 }
