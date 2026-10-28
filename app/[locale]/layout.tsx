@@ -1,15 +1,19 @@
 import '../globals.css'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import type { ReactNode } from 'react'
 import { notFound } from 'next/navigation'
 import { isLocale } from '@/lib/locales'
 import { getDict } from '@/lib/i18n'
-import { createClient } from '@/lib/supabase/server'
 import Header from '@/components/Header'
+import BottomNav from '@/components/BottomNav'
 
 export const metadata: Metadata = {
   title: 'Birge',
   description: 'Intercity ride sharing — cost sharing only',
+}
+
+export const viewport: Viewport = {
+  themeColor: '#047857',
 }
 
 export default async function LocaleLayout({
@@ -23,22 +27,13 @@ export default async function LocaleLayout({
   if (!isLocale(locale)) notFound()
 
   const t = getDict(locale)
-  const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  let isAdmin = false
-  if (user) {
-    const { data } = await supabase.rpc('is_admin')
-    isAdmin = !!data
-  }
 
   return (
     <html lang={locale}>
       <body>
-        <Header locale={locale} t={t} loggedIn={!!user} isAdmin={isAdmin} />
-        <main className="mx-auto max-w-2xl px-4 pb-24 pt-6">{children}</main>
+        <Header locale={locale} />
+        <main className="mx-auto max-w-2xl px-4 pb-28 pt-5">{children}</main>
+        <BottomNav locale={locale} t={t} />
       </body>
     </html>
   )
