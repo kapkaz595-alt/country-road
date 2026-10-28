@@ -55,5 +55,9 @@
   "err_daily_limit": "You can publish at most 2 rides per 24 hours.",
   "err_past": "Departure must be in the future.",
   "err_no_vehicle": "Add a vehicle in your profile before publishing a ride.",
-  "go_profile": "Go to profile"
+  "go_profile": "Go to profile",
+  "nav_me": "Me",
+  "login_google": "Continue with Google",
+  "login_google_hint": "No sign-up needed — one tap with your Google account.",
+  "login_google_err": "Sign-in failed, please try again."
 }
