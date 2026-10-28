@@ -45,6 +45,8 @@ const icons = {
   ),
 }
 
+const ME: Record<Locale, string> = { kk: 'Мен', ru: 'Я', zh: '我', en: 'Me' }
+
 export default function BottomNav({ locale, t }: { locale: Locale; t: Dict }) {
   const pathname = usePathname()
   const rest = pathname.replace(/^\/(kk|ru|zh|en)/, '') || '/'
@@ -56,7 +58,7 @@ export default function BottomNav({ locale, t }: { locale: Locale; t: Dict }) {
     {
       key: 'me',
       href: `/${locale}/profile`,
-      label: t.nav_me,
+      label: ME[locale],
       match: (r) => r.startsWith('/profile') || r.startsWith('/login') || r.startsWith('/admin'),
       icon: icons.me,
     },
