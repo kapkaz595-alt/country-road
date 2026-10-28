@@ -55,5 +55,9 @@
   "err_daily_limit": "24 小时内最多发布 2 趟行程。",
   "err_past": "出发时间必须在未来。",
   "err_no_vehicle": "发布行程前，请先在个人资料里添加车辆。",
-  "go_profile": "前往个人资料"
+  "go_profile": "前往个人资料",
+  "nav_me": "我",
+  "login_google": "使用 Google 账号登录",
+  "login_google_hint": "无需注册，用 Google 账号一键登录。",
+  "login_google_err": "登录失败，请重试。"
 }
