@@ -43,7 +43,7 @@ export default function RideCard({
   return (
     <Link
       href={`/${locale}/rides/${ride.id}`}
-      className="block rounded-2xl border border-stone-200 bg-white p-4 transition hover:border-emerald-600"
+      className="block rounded-3xl border border-stone-200 bg-white p-4 shadow-sm transition active:scale-[0.99] hover:border-emerald-600"
     >
       <div className="flex items-start justify-between gap-3">
         <div>
@@ -60,9 +60,17 @@ export default function RideCard({
         </div>
       </div>
 
-      <p className="mt-2 text-xs text-stone-500">
-        {ride.from_point} → {ride.to_point}
-      </p>
+      <div className="mt-3 flex gap-3 text-xs text-stone-600">
+        <div className="flex flex-col items-center py-1">
+          <span className="h-2 w-2 rounded-full border-2 border-emerald-700" />
+          <span className="my-0.5 w-px flex-1 bg-stone-300" />
+          <span className="h-2 w-2 rounded-full bg-emerald-700" />
+        </div>
+        <div className="flex flex-col justify-between gap-2">
+          <p>{ride.from_point}</p>
+          <p>{ride.to_point}</p>
+        </div>
+      </div>
 
       <div className="mt-3 flex items-center justify-between gap-3 border-t border-stone-100 pt-3 text-sm">
         <div>
