@@ -3,6 +3,7 @@ import { isLocale } from '@/lib/locales'
 import { getDict } from '@/lib/i18n'
 import { createClient } from '@/lib/supabase/server'
 import ProfileForm from '@/components/ProfileForm'
+import AccountActions from '@/components/AccountActions'
 import VehicleSection, { type Vehicle } from '@/components/VehicleSection'
 
 export default async function ProfilePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -16,7 +17,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
   } = await supabase.auth.getUser()
   if (!user) redirect(`/${locale}/login`)
 
-  const [{ data: profile }, { data: contacts }, { data: vehicles }, { data: plateRows }] =
+  const [{ data: profile }, { data: contacts }, { data: vehicles }, { data: plateRows }, { data: adminFlag }] =
     await Promise.all([
       supabase.from('profiles').select('name').eq('id', user.id).single(),
       supabase.from('contacts').select('phone,whatsapp,telegram').eq('user_id', user.id).maybeSingle(),
@@ -26,6 +27,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
         .eq('user_id', user.id)
         .order('created_at'),
       supabase.from('vehicle_plates').select('vehicle_id,plate').eq('user_id', user.id),
+      supabase.rpc('is_admin'),
     ])
 
   const plates: Record<string, string> = {}
@@ -55,6 +57,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ locale
         vehicles={(vehicles ?? []) as Vehicle[]}
         plates={plates}
       />
+      <AccountActions locale={locale} t={t} isAdmin={!!adminFlag} />
     </div>
   )
 }
